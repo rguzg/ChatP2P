@@ -1,0 +1,16 @@
+{
+  "name": "chatp2p-cliente",
+  "version": "1.0.0",
+  "description": "Cliente del ChatP2P",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "chatp2p",
+    "websockets",
+    "electron"
+  ],
+  "author": "",
+  "license": "ISC"
+}
