@@ -4,7 +4,7 @@
   "description": "Cliente del ChatP2P",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "electron ."
   },
   "keywords": [
     "chatp2p",
@@ -12,5 +12,6 @@
     "electron"
   ],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {}
 }
