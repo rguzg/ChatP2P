@@ -10,23 +10,22 @@
     <h1>Login</h1>
     <button id="main" type="button">Main</button>
 
-
     <script>
-        const button = document.getElementById('main');
-    button.addEventListener('click', () => {
-      createBrowserWindow();
-    });
+    //     const button = document.getElementById('main');
+    // button.addEventListener('click', () => {
+    //   createBrowserWindow();
+    // });
     
-    function createBrowserWindow() {
-      const remote = require('electron').remote;
-      const BrowserWindow = remote.BrowserWindow;
-      const win = new BrowserWindow({
-        height: 600,
-        width: 800
-      });
+    // function createBrowserWindow() {
+    //   const remote = require('electron').remote;
+    //   const BrowserWindow = remote.BrowserWindow;
+    //   const win = new BrowserWindow({
+    //     height: 600,
+    //     width: 800
+    //   });
     
-      win.loadURL('index.html');
-    }
+    //   win.loadURL('index.html');
+    // }
     </script>
 </body>
 
