@@ -4,33 +4,42 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Login CSS  -->
+    <link rel="stylesheet" href="login.css">
+    <!-- Bootstrap Modules  -->
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/js/bootstrap.min.js">
+    <!-- Fonts  -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
+    <!-- JS & JQuery  -->
     <script defer src="static/login.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <title>Welcome to QuickMail!</title>
 </head>
-<body>
-    <h1>Login</h1>
-    <button id="main" type="button">Main</button>
-
-    <script>
-    //     const button = document.getElementById('main');
-    // button.addEventListener('click', () => {
-    //   createBrowserWindow();
-    // });
-    
-    // function createBrowserWindow() {
-    //   const remote = require('electron').remote;
-    //   const BrowserWindow = remote.BrowserWindow;
-    //   const win = new BrowserWindow({
-    //     height: 600,
-    //     width: 800
-    //   });
-    
-    //   win.loadURL('index.html');
-    // }
-    </script>
+<body class="backgroundLogin">
+    <!-- Div Principal  -->
+    <div class="principal d-flex flex-column justify-content-center align-items-center">
+        <!-- Imagen Logo  -->
+        <div class="d-flex">
+            <img src="img/QuickMail.png" alt="QuickMail Logo" style="background-size: cover; width: fit-content; height: fit-content;">
+        </div>
+        <!-- Slogan  -->
+        <div class="slogan d-flex pt-3">
+            <h4><i>The best way to keep in touch</i></h4>
+        </div>  
+        <!-- Input & Button  -->
+        <div class="d-flex row pt-3">
+            <form action="" class="formLogin d-flex col-sm justify-content-center align-items-center">
+                <input type="text" class="form-control col-sm-11" placeholder="Enter your name...">
+                <button id="main" type="button" class="col-sm-1"><img src="img/send.png" alt="Send Button"></button>
+            </form>       
+        </div>        
+    </div>    
+    <div class="copyright d-flex align-items-center pl-3">
+        <h6 class="d-flex">© Copyright All Rights Reserved. 2021</h6>
+    </div>
 </body>
-
-
 </html>
