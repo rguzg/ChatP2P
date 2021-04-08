@@ -1,9 +1,16 @@
-
 const electron = require('electron');
 const url = require('url');
 const path = require('path');
+const io = require("socket.io");
+const http = require("http");
 
-const {app, BrowserWindow} = electron;
+const {app, BrowserWindow, contextBridge} = electron;
+const server = http.createServer();
+const socket_server = io(server, {
+    // Este puerto será definido para cada cliente durante el proceso de inicio de sesión. Por el momento se dejará como 3000
+    port: 3000,
+    serveClient: false
+});
 
 let index;
 
@@ -18,5 +25,18 @@ app.on('ready', function() {
         slashes: true
     }));
 });
+
+// Esta sección controla todo lo que tenga que ver con los WebSockets
+socket_server.on('connection', (socket) => {
+    console.log("Nueva conexión detectada");
+    socket.on('message', (message) => {
+        console.log("Se ha recibido un mensaje, enviandolo al proceso Render...");
+    });
+});
+
+server.listen(process.env.PORT || 3000, () => {
+    console.log('The server is running!');
+});
+
 
 
