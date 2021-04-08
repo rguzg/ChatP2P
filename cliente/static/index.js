@@ -1,4 +1,4 @@
-// Al hacer clic en un usuario, se conectará al servidor de WS de ese usuario
+// Esta clase manejará el WS de un contacto, además de almacenar sus mensajes
 class Contacto{
     constructor(){
         // Estos valores normalmente se obtendrían haciendo una petición al servidor,
