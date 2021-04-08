@@ -1,0 +1,214 @@
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+html, body {
+    height: 100%;
+    font-family: 'Roboto', sans-serif;
+}
+
+.row {
+    margin: 0px !important;
+    padding: 0px !important;
+}
+
+.col-sm {
+    padding: 0px !important;
+}
+
+.col-sm-3 {
+    margin: 0px !important;
+    padding: 0px !important;
+}
+
+.titulo{
+    width: 100%;
+    height: auto;
+}
+.titulo img{
+    max-width: 18%;
+    display:block;
+    margin:auto;
+}
+
+.inputSearch {
+    width: 100%;
+    height: auto;
+    background-color: #EFF4FF;
+    background-image: url('./img/search.png');
+    background-repeat: no-repeat;
+    background-position: 5% center;
+    background-size: 20px;
+    padding: 5%;
+    padding-left: 15%;
+    text-decoration: none;
+    border: none;
+    border: #D9D9D9 1px solid;
+}
+    .inputSearch::placeholder {
+        font-weight: 700;
+        color: #C0C0CE;
+    }
+
+.barraSuperior{
+    background-color: #7D9CFF;
+    width: 100%;
+    height: 100%;
+    padding: 0%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+    .barraSuperior img{
+        max-width: 4%;
+        height: auto;
+    }
+
+    .barraSuperior p {
+        margin-bottom: 0px !important;
+        margin-left: 15px;
+        font-size: 1.2rem;
+        font-weight: 700;
+    }
+
+.botones{
+    width: 100%;
+    height: auto;
+    padding: 0px !important;
+    border: none;
+    border-color: none;
+}
+    .botones button{
+        width: 100%;
+        height: auto;
+        background-color: #FFFFFF;
+        border: #D9D9D9 1px solid;
+        font-weight: 700;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 3%;        
+    }
+        .status {
+            width: 20px;
+            margin-left: 5px;
+        }
+
+        .user {
+            width: 15%;
+            margin-left: 15px;
+        }
+    
+        .botones p {
+            margin-bottom: 0px !important;
+            margin-left: 10px;
+            font-size: 1.1rem;
+        }
+
+.perfil {
+    background-color: #7D9CFF;
+    padding: 5%;
+}
+    .userProfile {
+        width: 20%;
+    }
+
+    .myProfile p {
+        margin-bottom: 0px !important;
+        margin-left: 15px;
+        font-size: 1.1rem;
+        font-weight: 700;
+    }
+
+    .logout {
+        width: 10%;
+        cursor: pointer;
+    }
+
+.derecha {
+    background-image: url("img/Background_Login.png");
+    background-size: cover;
+    margin: 0px !important;
+    padding: 0px !important;
+}
+
+.receive img {
+    width: 4%;
+    margin-right: 10px;
+}
+
+.box {
+    width: auto;
+    height: auto;
+    margin: 15px;
+    background: #B5C6FF;
+    padding: 10px;
+    text-align: center;
+    color: #fff;
+    font-family: arial;
+    position: relative;
+    color: black;
+}
+
+.sb1:before {
+    content: "";
+    width: 0px;
+    height: 0px;
+    position: absolute;
+    border-left: 10px solid #B5C6FF;
+    border-right: 10px solid transparent;
+    border-top: 10px solid #B5C6FF;
+    border-bottom: 10px solid transparent;
+    right: -19px;
+    top: 6px;
+}
+
+.sb2:before {
+    content: "";
+    width: 0px;
+    height: 0px;
+    position: absolute;
+    border-left: 10px solid transparent;
+    border-right: 10px solid #B5C6FF;
+    border-top: 10px solid #B5C6FF;
+    border-bottom: 10px solid transparent;
+    left: -19px;
+    top: 6px;
+}
+
+.type {
+    padding: 2%;
+    margin: 0px !important;
+    border: #D9D9D9 1px solid;
+    background-color: white;
+}
+    .type div {
+        width: 90%;
+    }
+
+    .attachment {
+        width: 4%;
+        cursor: pointer;
+    }
+
+.typeMessage {
+    border: none;
+    margin-bottom: 0px !important;
+    margin-left: 15px;
+    font-size: 1.1rem;
+    width: 100%;
+}
+    .typeMessage::placeholder {
+        font-weight: 700;
+        color: #C0C0CE;
+    }
+
+    *:focus {
+        outline: none;
+    }
+
+.send {
+    width: 3%;
+    cursor: pointer;
+}

@@ -31,7 +31,6 @@ html, body {
         box-shadow: -4px 4px 4px #C0C0CE;
         font-size: 1rem;
     }
-
         .formLogin input::placeholder {
             font-weight: 700;
         }

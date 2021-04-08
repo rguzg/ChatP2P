@@ -1,12 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Index CSS  -->
+    <link rel="stylesheet" href="index.css">
+    <!-- Bootstrap Modules  -->
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/js/bootstrap.min.js">
+    <!-- Fonts  -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+
+    <!-- JS & JQuery  -->
+    <script defer src="static/login.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
     <title>QuickMail - Inbox</title>
 </head>
+
 <body>
-    <h1>Inbox</h1>
+    <div class="d-flex flex-column h-100">
+        <!-- QuickMail Logo  -->
+        <div class="row titulo">
+            <img src="./img/QuickMail.png" alt="">
+        </div>
+        <!-- Input Search & Current Contact  -->
+        <div class="row w-100">
+            <!-- Input Search  -->
+            <div class="col-sm-3">
+                <input class="inputSearch" type="text" placeholder="Search...">
+            </div>
+            <!-- Current Contact  -->
+            <div class="col-sm-9 barraSuperior">
+                <img src="./img/user.png" alt="User">
+                <p>Paul Smith</p>
+            </div>
+        </div>
+        <div class="col-sm h-100">
+            <div class="col-sm d-flex h-100">
+                <div class="col-sm-3 d-flex flex-column justify-content-between">
+                    <!-- Contacts -->
+                    <div class="botones">
+                        <button class="contacto">
+                            <img src="img/status.png" alt="Status" class="status">
+                            <img src="img/user.png" alt="User" class="user">
+                            <p>Paul Smith
+                            </p>
+                        </button>
+                    </div>
+                    <!-- My Profile  -->
+                    <div class="perfil d-flex align-items-center justify-content-between">
+                        <!-- Profile Picture and Profile Name  -->
+                        <div class="myProfile d-flex justify-content-start align-items-center">
+                            <img src="./img/user.png" alt="User" class="userProfile" style="width: 20%;">
+                            <p>Ana Vassallo</p>
+                        </div>
+                        <!-- Logout Button  -->
+                        <img src="./img/logout.png" alt="Logout" class="logout">
+                    </div>
+                </div>
+                <div class="col-sm-9 derecha d-flex flex-column justify-content-end">
+                    <!-- RECEIVE MESSAGES  -->
+                    <div class="messages row d-flex align-items-center">
+                        <div class="receive d-flex col-sm-12 align-items-center justify-content-start">
+                            <img src="./img/user.png" alt="User">
+                            <div class="box sb2">
+                                Hello! How are you?
+                            </div>
+                        </div>
+                    </div>
+                    <!-- SEND MESSAGES  -->
+                    <div class="messages row d-flex align-items-center">
+                        <div class="sending d-flex col-sm-12 align-items-center justify-content-end">
+                            <div class="box sb1">
+                                Fine, thank you, and you?
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Type Messages  -->
+                    <div class="type d-flex align-items-center justify-content-between">
+                        <!-- Attachment & Type a message...  -->
+                        <div class="d-flex justify-content-start align-items-center">
+                            <img src="./img/attachment.png" alt="Attachment" class="attachment">
+                            <input class="typeMessage" placeholder="Type a message...">
+                        </div>
+                        <!-- Send Button  -->
+                        <img src="./img/send.png" alt="Send" class="send" style="width: 3%; cursor: pointer;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
+
 </html>
