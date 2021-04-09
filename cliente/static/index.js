@@ -76,8 +76,12 @@ const ShowMessages = (mensajes) => {
         throw new Error('contenedorMensajes no está definido');
     }
 
+    if(!mensajes){
+        throw new Error('El argumento mensajes es obligatorio');
+    }
+
     // Eliminar los elementos que representan los mensajes enviados y recibidos que se encuentren actualmente en la caja de mensajes
-    contenedor_mensajes.innerHTML = "";
+    contenedorMensajes.innerHTML = "";
     
     mensajes.forEach((mensaje) => {
         let contenedor_mensaje = document.createElement('div');
@@ -117,7 +121,7 @@ const ShowMessages = (mensajes) => {
         }
 
         contenedor_mensaje.appendChild(contenido_mensaje);
-        contenedor_mensajes.appendChild(contenedor_mensaje);
+        contenedorMensajes.appendChild(contenedor_mensaje);
     });
 };
 
