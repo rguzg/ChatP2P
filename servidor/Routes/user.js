@@ -1,8 +1,10 @@
 const express = require('express');
 const user = express.Router();
 const db = require('../config/database')
+const connUsers = require('../config/ConnectedUsers')
 const jwt = require('jsonwebtoken');
 let users = db.usuarios
+let ConnUsers = connUsers.usuariosConectados
 
 user.post("/signin", async(req,res,next) =>{
 //Se pide el username y la contraseña
@@ -37,19 +39,23 @@ user.post("/login",async(req,res,next)=>{
 
 const {user_name,user_password} = req.body
 
+//Verificación de datos
 if(user_name&&user_password){
 
-    
+    //Existencia del usuario 
     if(users.hasOwnProperty(user_name)){
 
         if(users[user_name][0]==user_name&&users[user_name][1]==user_password){
 
-        
+                //Creación del JWT
                 const token = jwt.sign({
                     user_name : users[user_name][0],
                     
                 }, 'debugkey')
                
+
+                //Se agrega el usuario a la lista de usuarios Conectados.
+               ConnUsers[user_name] = [user_name,req.ip]
                
                 return res.status(200).json({code:200,message:token})
 
