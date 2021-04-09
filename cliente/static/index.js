@@ -46,7 +46,8 @@ class Contacto{
         return button;
     }
 
-    CreateWebSocket(){
+    // Set this.ws como un nuevo socket 
+    SetWebSocket(){
         let socket = io(`ws://localhost:${this.port}`, {
             transports: ["websocket"],
         });
@@ -56,6 +57,7 @@ class Contacto{
             this.dispatchWSEvent(new Event('connect'));
         });
 
+        this.ws = socket;
     }
 
     // Envia evento si listener no es nulo
@@ -134,7 +136,7 @@ window.onload = () => {
     // Mostrar la ventana de chat, y si no existe, crear el WS que le corresponde al contacto
     nuevoContacto.DOMElement.addEventListener('click', () => {
         if(nuevoContacto.ws == null){
-            nuevoContacto.ws = nuevoContacto.CreateWebSocket();
+            nuevoContacto.SetWebSocket();
         }
 
         ShowMessages(nuevoContacto.messages);
