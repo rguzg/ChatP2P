@@ -9,6 +9,10 @@ class Contacto{
         // El elemento en el DOM que representará al contacto
         this.DOMElement = this.CreateDOMElement();
         this.ws = null;
+
+        // Elemento al que se le reenviarán los eventos que reciba el socket
+        this.listener = null;
+
         this.messages = [
             {type: 'enviado', content: '¡Hola!'},
             {type: 'recibido', content: 'Adios.'}
@@ -49,7 +53,16 @@ class Contacto{
 
         socket.on('connect', () => {
             alert("Conectado al servidor de WS");
+            this.dispatchWSEvent(new Event('connect'));
         });
+
+    }
+
+    // Envia evento si listener no es nulo
+    dispatchWSEvent(event){
+        if(this.listener != null){
+            this.listener.dispatchEvent(event);
+        }
     }
 }
 
@@ -105,6 +118,8 @@ const ShowMessages = (mensajes) => {
 let currentContact = null;
 let contactos = [];
 
+let contenedorMensajes = document.querySelector('#mensajes');
+
 window.onload = () => {
     // Por el momento solo existirá un solo contacto, en el futuro, las personas conectadas se obtendrán 
     // del servidor
@@ -118,6 +133,12 @@ window.onload = () => {
         }
 
         ShowMessages(nuevoContacto.messages);
+    });
+
+    nuevoContacto.listener = contenedorMensajes;
+
+    contenedorMensajes.addEventListener('connect', () => {
+        alert('Mensajes dicen hola :)');
     });
 
     document.querySelector('.botones').appendChild(nuevoContacto.DOMElement);
