@@ -17,6 +17,8 @@ class Contacto{
             {type: 'text', content: '¡Hola!', origin: 'sent', contact: this.name},
             {type: 'text', content: 'Adios.', origin: 'received', contact: this.name}
         ]
+
+        this.SetMessageCallback();
     };
 
     CreateDOMElement(){
@@ -59,9 +61,20 @@ class Contacto{
         this.ws = socket;
     }
 
+    // Enviar un evento 'message' cuando el proceso Main envie un mensaje a este contacto y almacenar el mensaje 
+    // recibido
+    SetMessageCallback(){
+        ipcRenderer.setMessageCallback((event, message) => {
+            if(message.contact == this.name){
+                this.dispatchWSEvent(new CustomEvent('message', {detail: message}));
+                this.messages.push(message);
+            }
+        });
+    }
+
     // Envia al contacto al que se esté conectado un mensaje. 
     // El mensaje también se almacena en this.messages y además se 
-    // envía un evento 'message_sent' con los contenidos del mensaje
+    // envía un evento 'message' con los contenidos del mensaje
     SendMessage(message_content){
         if(this.ws == null){
             throw new Error("El WebSocket de este contacto no está definido");
