@@ -14,8 +14,8 @@ class Contacto{
         this.listener = null;
 
         this.messages = [
-            {type: 'enviado', content: '¡Hola!'},
-            {type: 'recibido', content: 'Adios.'}
+            {type: 'text', content: '¡Hola!', origin: 'sent', contact: this.name},
+            {type: 'text', content: 'Adios.', origin: 'received', contact: this.name}
         ]
     };
 
@@ -68,9 +68,10 @@ class Contacto{
         }
 
         let message = {
-            user: this.name,
+            type: 'text',
             content: message_content,
-            type: 'enviado'
+            origin: 'sent',
+            contact: this.name,
         };
 
         this.ws.emit('message', message);
@@ -107,43 +108,7 @@ const ShowMessages = (mensajes) => {
     contenedorMensajes.innerHTML = "";
     
     mensajes.forEach((mensaje) => {
-        let contenedor_mensaje = document.createElement('div');
-        let contenido_mensaje = document.createElement('div');
-
-
-        switch(mensaje.type){
-            case 'recibido':
-                let profile_picture = document.createElement('img');
-
-                // Definición de profile_picture
-                profile_picture.src = 'img/user.png';
-                profile_picture.alt = 'User';
-                profile_picture.classList.add('user');
-
-                contenedor_mensaje.appendChild(profile_picture);
-
-                // Definición de mensaje
-                contenido_mensaje.classList.add('box', 'sb2');
-                contenido_mensaje.innerText = mensaje.content;
-
-                // Definición de contenedor_mensaje
-                contenedor_mensaje.classList.add('receive', 'd-flex', 'col-sm-12', 'align-items-center', 'justify-content-start');
-
-                break;
-            case 'enviado':
-                // Definición de mensaje
-                contenido_mensaje.classList.add('box', 'sb1');
-                contenido_mensaje.innerText = mensaje.content;
-
-                // Definición de contenedor_mensaje
-                contenedor_mensaje.classList.add('sending', 'd-flex', 'col-sm-12', 'align-items-center', 'justify-content-end');
-                
-                break;
-            default:
-                break;
-        }
-
-        contenedor_mensaje.appendChild(contenido_mensaje);
+        let contenedor_mensaje = CreateMessage(mensaje);
         contenedorMensajes.appendChild(contenedor_mensaje);
     });
 };
@@ -152,8 +117,8 @@ const CreateMessage = (mensaje) => {
     let contenedor_mensaje = document.createElement('div');
     let contenido_mensaje = document.createElement('div');
 
-    switch(mensaje.type){
-        case 'recibido':
+    switch(mensaje.origin){
+        case 'received':
             let profile_picture = document.createElement('img');
 
             // Definición de profile_picture
@@ -171,7 +136,7 @@ const CreateMessage = (mensaje) => {
             contenedor_mensaje.classList.add('receive', 'd-flex', 'col-sm-12', 'align-items-center', 'justify-content-start');
 
             break;
-        case 'enviado':
+        case 'sent':
             // Definición de mensaje
             contenido_mensaje.classList.add('box', 'sb1');
             contenido_mensaje.innerText = mensaje.content;
@@ -212,7 +177,7 @@ document.querySelector('#mensajes_texto').addEventListener('keydown', (event) =>
 contenedorMensajes.addEventListener('message', (event) => {
     let message = event.detail;
 
-    if(currentContact.name === message.user){
+    if(currentContact.name === message.contact){
         contenedorMensajes.appendChild(CreateMessage(message));
     }
 });
