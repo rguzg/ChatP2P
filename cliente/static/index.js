@@ -66,10 +66,16 @@ class Contacto{
     }
 }
 
-// Muestra los mensajes almacenados del contacto en la caja de mensajes
+const contenedorMensajes = document.querySelector('#mensajes');
+let currentContact = null;
+let contactos = [];
+
+// Muestra los mensajes almacenados del contacto en contenedorMensajes
 const ShowMessages = (mensajes) => {
-    let contenedor_mensajes = document.querySelector('#mensajes');
-    
+    if(!contenedorMensajes){
+        throw new Error('contenedorMensajes no está definido');
+    }
+
     // Eliminar los elementos que representan los mensajes enviados y recibidos que se encuentren actualmente en la caja de mensajes
     contenedor_mensajes.innerHTML = "";
     
@@ -114,11 +120,6 @@ const ShowMessages = (mensajes) => {
         contenedor_mensajes.appendChild(contenedor_mensaje);
     });
 };
-
-let currentContact = null;
-let contactos = [];
-
-let contenedorMensajes = document.querySelector('#mensajes');
 
 window.onload = () => {
     // Por el momento solo existirá un solo contacto, en el futuro, las personas conectadas se obtendrán 
