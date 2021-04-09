@@ -53,11 +53,29 @@ class Contacto{
         });
 
         socket.on('connect', () => {
-            alert("Conectado al servidor de WS");
             this.dispatchWSEvent(new Event('connect'));
         });
 
         this.ws = socket;
+    }
+
+    // Envia al contacto al que se esté conectado un mensaje. 
+    // El mensaje también se almacena en this.messages y además se 
+    // envía un evento 'message_sent' con los contenidos del mensaje
+    SendMessage(message_content){
+        if(this.ws == null){
+            throw new Error("El WebSocket de este contacto no está definido");
+        }
+
+        let message = {
+            user: this.name,
+            content: message_content,
+            type: 'enviado'
+        };
+
+        this.ws.emit('message', message);
+        this.messages.push(message);
+        this.dispatchWSEvent(new CustomEvent('message', {detail: message}));
     }
 
     // Envia evento si listener no es nulo
@@ -69,6 +87,9 @@ class Contacto{
 }
 
 const contenedorMensajes = document.querySelector('#mensajes');
+const inputMensajesTexto = document.querySelector('#mensajes_texto');
+const botonEnviar = document.querySelector('#boton_enviar');
+
 let currentContact = null;
 let contactos = [];
 
@@ -127,6 +148,75 @@ const ShowMessages = (mensajes) => {
     });
 };
 
+const CreateMessage = (mensaje) => {
+    let contenedor_mensaje = document.createElement('div');
+    let contenido_mensaje = document.createElement('div');
+
+    switch(mensaje.type){
+        case 'recibido':
+            let profile_picture = document.createElement('img');
+
+            // Definición de profile_picture
+            profile_picture.src = 'img/user.png';
+            profile_picture.alt = 'User';
+            profile_picture.classList.add('user');
+
+            contenedor_mensaje.appendChild(profile_picture);
+
+            // Definición de mensaje
+            contenido_mensaje.classList.add('box', 'sb2');
+            contenido_mensaje.innerText = mensaje.content;
+
+            // Definición de contenedor_mensaje
+            contenedor_mensaje.classList.add('receive', 'd-flex', 'col-sm-12', 'align-items-center', 'justify-content-start');
+
+            break;
+        case 'enviado':
+            // Definición de mensaje
+            contenido_mensaje.classList.add('box', 'sb1');
+            contenido_mensaje.innerText = mensaje.content;
+
+            // Definición de contenedor_mensaje
+            contenedor_mensaje.classList.add('sending', 'd-flex', 'col-sm-12', 'align-items-center', 'justify-content-end');
+            
+            break;
+        default:
+            break;
+    }
+
+    contenedor_mensaje.appendChild(contenido_mensaje);
+    return contenedor_mensaje;
+}
+
+// Enviar al cliente el mensaje que se encuentre en inputMensajesTexto
+botonEnviar.addEventListener('click', () => {
+    let texto_mensaje = inputMensajesTexto.value;
+
+    if(texto_mensaje.trim() != "" && currentContact){
+        currentContact.SendMessage(texto_mensaje);
+    }
+
+    inputMensajesTexto.value = "";
+});
+
+// Enviar el mensaje cuando se presione enter y cuando se #mensajes_texto tenga focus 
+document.querySelector('#mensajes_texto').addEventListener('keydown', (event) => {
+    if(event.code === 'Enter'){
+        event.preventDefault();
+        botonEnviar.dispatchEvent(new Event('click'));
+    }
+});
+
+// Mostrar mensajes que haya enviado/recibido el usuario. Los mensajes solo se envían si currentContact es
+// el mismo contacto al que le mandó/del que recibió el mensaje
+contenedorMensajes.addEventListener('message', (event) => {
+    let message = event.detail;
+
+    if(currentContact.name === message.user){
+        contenedorMensajes.appendChild(CreateMessage(message));
+    }
+});
+
 window.onload = () => {
     // Por el momento solo existirá un solo contacto, en el futuro, las personas conectadas se obtendrán 
     // del servidor
@@ -139,14 +229,11 @@ window.onload = () => {
             nuevoContacto.SetWebSocket();
         }
 
+        currentContact = nuevoContacto;
         ShowMessages(nuevoContacto.messages);
     });
 
     nuevoContacto.listener = contenedorMensajes;
-
-    contenedorMensajes.addEventListener('connect', () => {
-        alert('Mensajes dicen hola :)');
-    });
 
     document.querySelector('.botones').appendChild(nuevoContacto.DOMElement);
 }
