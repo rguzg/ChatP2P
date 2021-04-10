@@ -5,12 +5,8 @@ const io = require("socket.io");
 const http = require("http");
 
 const {app, BrowserWindow, ipcMain} = electron;
-const server = http.createServer();
-const socket_server = io(server, {
-    // Este puerto será definido para cada cliente durante el proceso de inicio de sesión. Por el momento se dejará como 3000
-    port: 3000,
-    serveClient: false
-});
+let server;
+let socket_server;
 
 let index;
 
@@ -30,23 +26,34 @@ app.on('ready', function() {
     }));
 });
 
-// Esta sección controla todo lo que tenga que ver con los WebSockets
-socket_server.on('connection', (socket) => {
-    console.log("Nueva conexión detectada");
+ipcMain.on('startWSServer', (event, port) => {
+    server = http.createServer();
+    
+    socket_server = io(server, {
+        // Este puerto será definido para cada cliente durante el proceso de inicio de sesión. Por el momento se dejará como 3000
+        port: port,
+        serveClient: false
+    });
 
-    // Cuando se recibe un mensaje, enviarlo al proceso Render
-    socket.on('message', (message) => {
-        console.log("Se ha recibido un mensaje, enviandolo al proceso Render...");
-
-        message.origin = 'received';
-
-        index.webContents.send('message', message);
+    // Esta sección controla todo lo que tenga que ver con los WebSockets
+    socket_server.on('connection', (socket) => {
+        console.log("Nueva conexion detectada");
+    
+        // Cuando se recibe un mensaje, enviarlo al proceso Render
+        socket.on('message', (message) => {
+            console.log("Se ha recibido un mensaje, enviandolo al proceso Render...");
+    
+            message.origin = 'received';
+    
+            index.webContents.send('message', message);
+        });
+    });
+    
+    server.listen(process.env.PORT || 3000, () => {
+        console.log('The server is running!');
     });
 });
 
-server.listen(process.env.PORT || 3000, () => {
-    console.log('The server is running!');
-});
 
 
 

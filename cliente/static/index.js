@@ -211,6 +211,8 @@ window.onload = () => {
         let decoded = jwt_decode(token);
         let username = decoded['user_name'];
 
+        ipcRenderer.startWSServer(3000);
+
         document.querySelector('#username').innerText = username;
     } catch {
         window.location.href = 'login.html';

@@ -6,6 +6,9 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
     sendMessage: (message) => {
         ipcRenderer.send('message', message)
     },
+    startWSServer: (port) => {
+        ipcRenderer.send('startWSServer', port);
+    },
     // Permite especificar un callback cuando Main Process envia un mensaje 'message'
     setMessageCallback: (callback) => {
         ipcRenderer.on('message', callback);
