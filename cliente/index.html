@@ -23,6 +23,9 @@
     <!-- Socket.IO -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
 
+    <!-- jwt_decode -->
+    <script src="static/jwt-decode.js"></script>
+
     <title>QuickMail - Inbox</title>
 </head>
 
@@ -61,7 +64,7 @@
                         <!-- Profile Picture and Profile Name  -->
                         <div class="myProfile d-flex justify-content-start align-items-center">
                             <img src="./img/user.png" alt="User" class="userProfile" style="width: 20%;">
-                            <p>Ana Vassallo</p>
+                            <p id="username"></p>
                         </div>
                         <!-- Logout Button  -->
                         <img src="./img/logout.png" alt="Logout" class="logout">

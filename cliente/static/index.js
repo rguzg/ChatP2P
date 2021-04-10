@@ -106,6 +106,7 @@ const botonEnviar = document.querySelector('#boton_enviar');
 
 let currentContact = null;
 let contactos = [];
+let username;
 
 // Muestra los mensajes almacenados del contacto en contenedorMensajes
 const ShowMessages = (mensajes) => {
@@ -200,6 +201,15 @@ contenedorMensajes.addEventListener('message', (event) => {
 });
 
 window.onload = () => {
+    try {
+        let token = sessionStorage.getItem('token');
+        let decoded = jwt_decode(token);
+        let username = decoded['user_name'];
+
+        document.querySelector('#username').innerText = username;
+    } catch {
+        window.location.href = 'login.html';
+    }
     // Por el momento solo existirá un solo contacto, en el futuro, las personas conectadas se obtendrán 
     // del servidor
     let nuevoContacto = new Contacto();
