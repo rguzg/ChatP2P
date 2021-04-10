@@ -182,6 +182,11 @@ botonEnviar.addEventListener('click', () => {
     inputMensajesTexto.value = "";
 });
 
+document.querySelector('#logout').addEventListener('click', () => {
+    sessionStorage.removeItem('token');
+    window.location.href = 'login.html';
+});
+
 // Enviar el mensaje cuando se presione enter y cuando se #mensajes_texto tenga focus 
 document.querySelector('#mensajes_texto').addEventListener('keydown', (event) => {
     if(event.code === 'Enter'){
