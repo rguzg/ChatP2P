@@ -126,6 +126,10 @@ const ShowMessages = (mensajes) => {
     });
 };
 
+const ChangeMessageBoxHeader = (text) => {
+    document.querySelector('#contactName').innerText = text;
+};
+
 const CreateMessage = (mensaje) => {
     let contenedor_mensaje = document.createElement('div');
     let contenido_mensaje = document.createElement('div');
@@ -208,7 +212,8 @@ window.onload = () => {
         }
 
         currentContact = nuevoContacto;
-        ShowMessages(nuevoContacto.messages);
+        ShowMessages(currentContact.messages);
+        ChangeMessageBoxHeader(currentContact.name);
     });
 
     nuevoContacto.listener = contenedorMensajes;
