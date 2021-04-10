@@ -35,6 +35,10 @@ ipcMain.on('startWSServer', (event, port) => {
         serveClient: false
     });
 
+    server.on('close', () => {
+        console.log("Servidor parado");
+    })
+
     // Esta sección controla todo lo que tenga que ver con los WebSockets
     socket_server.on('connection', (socket) => {
         console.log("Nueva conexion detectada");
@@ -49,9 +53,13 @@ ipcMain.on('startWSServer', (event, port) => {
         });
     });
     
-    server.listen(process.env.PORT || 3000, () => {
-        console.log('The server is running!');
+    server.listen(port, () => {
+        console.log('Servidor iniciado');
     });
+});
+
+ipcMain.on('closeWSServer', () => {
+    socket_server.close();
 });
 
 

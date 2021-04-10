@@ -183,6 +183,7 @@ botonEnviar.addEventListener('click', () => {
 });
 
 document.querySelector('#logout').addEventListener('click', () => {
+    ipcRenderer.closeWSServer();
     sessionStorage.removeItem('token');
     window.location.href = 'login.html';
 });
