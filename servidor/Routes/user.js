@@ -6,10 +6,10 @@ let users = db.usuarios
 
 user.post("/signin", async(req,res,next) =>{
 //Se pide el username y la contraseña
-    const {user_name,user_password} = req.body
+    const {user_name} = req.body
 
     //Se verifica que se manden todos los datos
-    if(user_name&&user_password){
+    if(user_name){
         
         //Verificación de que no exista un usuario con el mismo Username
         if(users.hasOwnProperty(user_name)){
@@ -18,7 +18,7 @@ user.post("/signin", async(req,res,next) =>{
 
         }else{
         //Se crea un apartado con el Username y Password utilizando el Username como identificador
-        users[user_name] = [user_name,user_password]
+        users[user_name] = [user_name]
 
 
     return res.status(200).json({code:200,message:'Usuario Creado Correctamente'})
@@ -27,22 +27,19 @@ user.post("/signin", async(req,res,next) =>{
     else{
         return res.status(200).json({code:200,message:'Campos Incorrectos'})
     }
-
-    
-
 })
 
 
 user.post("/login",async(req,res,next)=>{
 
-const {user_name,user_password} = req.body
+const {user_name} = req.body
 
-if(user_name&&user_password){
+if(user_name){
 
     
     if(users.hasOwnProperty(user_name)){
 
-        if(users[user_name][0]==user_name&&users[user_name][1]==user_password){
+        if(users[user_name][0]==user_name){
 
         
                 const token = jwt.sign({
