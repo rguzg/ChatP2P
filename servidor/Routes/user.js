@@ -54,20 +54,19 @@ if(user_name){
     if(users.hasOwnProperty(user_name)){
 
         if(users[user_name][0]==user_name){
+                let port = generatePortNumber();
 
                 //Creación del JWT
                 const token = jwt.sign({
                     user_name : users[user_name][0],
-                    port: generatePortNumber()
+                    port
                 }, 'debugkey')
                
 
                 //Se agrega el usuario a la lista de usuarios Conectados.
-               ConnUsers[user_name] = [user_name,req.ip]
+                ConnUsers[user_name] = [user_name, port];
                
                 return res.status(200).json({code:200,message:token})
-
-            
 
             }
         else{
@@ -93,4 +92,4 @@ else{
 
 
 
-module.exports = {user, database: users};
+module.exports = {user, database: connUsers};

@@ -1,10 +1,10 @@
 // Esta clase manejará el WS de un contacto, además de almacenar sus mensajes
 class Contacto{
-    constructor(){
+    constructor(name, port){
         // Estos valores normalmente se obtendrían haciendo una petición al servidor,
         // pero por el momento se quedará así
-        this.port = 3000;
-        this.name = "Paul Smith";
+        this.port = port;
+        this.name = name;
         
         // El elemento en el DOM que representará al contacto
         this.DOMElement = this.CreateDOMElement();
@@ -13,10 +13,7 @@ class Contacto{
         // Elemento al que se le reenviarán los eventos que reciba el socket
         this.listener = null;
 
-        this.messages = [
-            {type: 'text', content: '¡Hola!', origin: 'sent', contact: this.name},
-            {type: 'text', content: 'Adios.', origin: 'received', contact: this.name}
-        ]
+        this.messages = [];
 
         this.SetMessageCallback();
     };
@@ -224,27 +221,32 @@ window.onload = () => {
             }
         });
 
+        server_socket.on('users', (database) => {
+            let usuariosConectados = database['usuariosConectados']
+
+            Object.keys(usuariosConectados).forEach((user) => {
+                let nuevoContacto = new Contacto(usuariosConectados[user][0], usuariosConectados[user][1]);
+                contactos.push(nuevoContacto);   
+
+                // Mostrar la ventana de chat, y si no existe, crear el WS que le corresponde al contacto
+                nuevoContacto.DOMElement.addEventListener('click', () => {
+                    if(nuevoContacto.ws == null){
+                        nuevoContacto.SetWebSocket();
+                    }
+
+                    currentContact = nuevoContacto;
+                    ShowMessages(currentContact.messages);
+                    ChangeMessageBoxHeader(currentContact.name);
+                });
+
+                nuevoContacto.listener = contenedorMensajes;
+
+                document.querySelector('.botones').appendChild(nuevoContacto.DOMElement);
+            });
+        })
+
         document.querySelector('#username').innerText = username;
     } catch {
         window.location.href = 'login.html';
     }
-    // Por el momento solo existirá un solo contacto, en el futuro, las personas conectadas se obtendrán 
-    // del servidor
-    let nuevoContacto = new Contacto();
-    contactos.push(nuevoContacto);   
-
-    // Mostrar la ventana de chat, y si no existe, crear el WS que le corresponde al contacto
-    nuevoContacto.DOMElement.addEventListener('click', () => {
-        if(nuevoContacto.ws == null){
-            nuevoContacto.SetWebSocket();
-        }
-
-        currentContact = nuevoContacto;
-        ShowMessages(currentContact.messages);
-        ChangeMessageBoxHeader(currentContact.name);
-    });
-
-    nuevoContacto.listener = contenedorMensajes;
-
-    document.querySelector('.botones').appendChild(nuevoContacto.DOMElement);
 }

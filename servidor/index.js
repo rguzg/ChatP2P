@@ -23,18 +23,17 @@ app.use("/user",user)
 app.use(auth)
 app.use("/chat",chat)
 
-socket_server.on('connection', (socket) => {
-    console.log("Nueva conexion detectada");
-    console.log(database);
-});
-
 app.use(notFound)
 
 server.listen(process.env.PORT ||4000,()=>{
-
+    
     console.log("Server is Running...")
 });
 
+socket_server.on('connection', (socket) => {
+    console.log("Nueva conexion detectada");
+    socket.emit('users', database);
+});
 
 
 
