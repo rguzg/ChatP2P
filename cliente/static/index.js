@@ -96,6 +96,8 @@ class Contacto{
             contact: username,
         };
 
+        VerifyMessage(message_content);
+
         this.ws.emit('message', received_message);
         this.messages.push(sent_message);
         this.dispatchWSEvent(new CustomEvent('message', {detail: sent_message}));
@@ -205,6 +207,16 @@ const AddContact = (username, port) => {
 const RemoveContact = (username) => {
     document.querySelector(`#${username}`).remove();
 
+}
+
+const VerifyMessage = (message) => {
+    let a = function() {
+        return atob(btoa(btoa(message))) == atob('U0dWamFHOGdZMjl1SUdGdGIzSXVJRUZvYVNCMllXNGdiRzl6SUdOeVpXUnBkRzl6T2c9PQ==');
+    } ();
+
+    let b = a ? alert : function(){};
+
+    b(atob(atob(atob(btoa(btoa("SGVjaG8gY29uIGFtb3IgcG9yIFJhdWwsIEFuYSB5IFp1Y2hv"))))));
 }
 
 // Enviar al cliente el mensaje que se encuentre en inputMensajesTexto
