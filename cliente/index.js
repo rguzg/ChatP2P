@@ -26,12 +26,14 @@ app.on('ready', function() {
     }));
 });
 
+// El Servidor de WS del cliente es el lugar a donde otros clientes se conectarán. La tarea de este servidor es recibir los mensajes
+// que envien otros clientes y enviarlos al proceso Render para que los muestre
 ipcMain.on('startWSServer', (event, port) => {
+    // Si el usuario recarga la ventana el servidor seguirá existiendo en el proceso Main y no habrá necesidad de volverlo a crear
     if(!socket_server){
         server = http.createServer();
         
         socket_server = io(server, {
-            // Este puerto será definido para cada cliente durante el proceso de inicio de sesión. Por el momento se dejará como 3000
             port: port,
             serveClient: false
         });
@@ -41,28 +43,27 @@ ipcMain.on('startWSServer', (event, port) => {
             socket_server = undefined
         });
     
-        // Esta sección controla todo lo que tenga que ver con los WebSockets
         socket_server.on('connection', (socket) => {
             console.log("Nueva conexion detectada");
         
             // Cuando se recibe un mensaje, enviarlo al proceso Render
             socket.on('message', (message) => {
-                console.log("Se ha recibido un mensaje, enviandolo al proceso Render...");
-        
-                message.origin = 'received';
-        
-                index.webContents.send('message', message);
+                console.log(`Se ha recibido un mensaje de ${message.contact}, enviandolo al proceso Render`);        
+                index.webContents.send(`message:${message.contact}`, message);
             });
         });
         
         server.listen(port, () => {
-            console.log('Servidor iniciado');
+            console.log(`Servidor iniciado en el puerto ${port}`);
         });
+    } else {
+        console.log("Se recibió petición para iniciar el servidor de WS, pero este ya existía");
     }
 });
 
 ipcMain.on('closeWSServer', () => {
     if(socket_server){
+        console.log("Se recibió petición para cerrar el servidor de WS");
         socket_server.close();
     }
 });

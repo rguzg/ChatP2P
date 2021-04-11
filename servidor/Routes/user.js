@@ -8,6 +8,7 @@ let ConnUsers = connUsers.usuariosConectados
 let users = db.usuarios;
 let assigned_ports = [4000];
 
+// Retornar un número de puerto entre 50000 - 65536 que no esté en uso por otro cliente
 const generatePortNumber = () => {
     while(true){
         let port =  Math.floor(Math.random() * (65536 - 50000 + 1) + 50000);

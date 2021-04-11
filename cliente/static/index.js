@@ -1,12 +1,9 @@
 // Esta clase manejará el WS de un contacto, además de almacenar sus mensajes
 class Contacto{
     constructor(name, port){
-        // Estos valores normalmente se obtendrían haciendo una petición al servidor,
-        // pero por el momento se quedará así
         this.port = port;
         this.name = name;
         
-        // El elemento en el DOM que representará al contacto
         this.DOMElement = this.CreateDOMElement();
         this.ws = null;
 
@@ -46,7 +43,6 @@ class Contacto{
         return button;
     }
 
-    // Set this.ws como un nuevo socket 
     SetWebSocket(){
         let socket = io(`ws://localhost:${this.port}`, {
             transports: ["websocket"],
@@ -57,7 +53,7 @@ class Contacto{
         });
 
         socket.on('disconnect', () => {
-            this.DOMElement.remove();
+            this.dispatchWSEvent(new CustomEvent('disconnect', {detail: this}));
         })
 
         this.ws = socket;
@@ -66,7 +62,7 @@ class Contacto{
     // Enviar un evento 'message' cuando el proceso Main envie un mensaje a este contacto y almacenar el mensaje 
     // recibido
     SetMessageCallback(){
-        ipcRenderer.setMessageCallback((event, message) => {
+        ipcRenderer.setMessageCallback(this.name, (event, message) => {
             if(message.contact == this.name){
                 this.dispatchWSEvent(new CustomEvent('message', {detail: message}));
                 this.messages.push(message);
@@ -117,7 +113,7 @@ const botonEnviar = document.querySelector('#boton_enviar');
 const server_address = 'http://localhost:4000';
 
 let currentContact = null;
-let contactos = [];
+let contactos = {};
 let username;
 let server_socket;
 
@@ -186,7 +182,7 @@ const CreateMessage = (mensaje) => {
 
 const AddContact = (username, port) => {
     let nuevoContacto = new Contacto(username, port);
-    contactos.push(nuevoContacto);   
+    contactos[username] = nuevoContacto;   
 
     // Mostrar la ventana de chat, y si no existe, crear el WS que le corresponde al contacto
     nuevoContacto.DOMElement.addEventListener('click', () => {
@@ -254,7 +250,7 @@ document.querySelector('#mensajes_texto').addEventListener('keydown', (event) =>
     }
 });
 
-// Mostrar mensajes que haya enviado/recibido el usuario. Los mensajes solo se envían si currentContact es
+// Mostrar mensajes que haya enviado/recibido el usuario. Los mensajes solo se muestran si currentContact es
 // el mismo contacto al que le mandó/del que recibió el mensaje
 contenedorMensajes.addEventListener('message', (event) => {
     let message = event.detail;
@@ -264,10 +260,15 @@ contenedorMensajes.addEventListener('message', (event) => {
     }
 });
 
+contenedorMensajes.addEventListener('disconnect', (event) => {
+    let contacto = event.detail;
+
+    delete contactos[contacto.name];
+    delete contacto;
+})
+
 window.onload = () => {
     try {
-        ipcRenderer.closeWSServer();
-
         let token = sessionStorage.getItem('token');
         let decoded = jwt_decode(token);
 
@@ -275,6 +276,7 @@ window.onload = () => {
         let port = decoded['port']
 
         ipcRenderer.startWSServer(port);
+        ipcRenderer.removeAllListeners();
 
         server_socket = io(`ws://localhost:4000?token=${token}`, {
             transports: ["websocket"],
@@ -295,6 +297,7 @@ window.onload = () => {
 
         server_socket.on('connect_error', () => {
             alert('Ocurrió un error al conectarse con el servidor. Es necesario que vuelvas a iniciar sesión');
+            ipcRenderer.closeWSServer();
             window.location.href = 'login.html';
         });
 
@@ -308,6 +311,7 @@ window.onload = () => {
 
         server_socket.on('disconnect', () => {
             alert('Ocurrió un error al conectarse con el servidor. Es necesario que vuelvas a iniciar sesión');
+            ipcRenderer.closeWSServer();
             window.location.href = 'login.html';
         });
 

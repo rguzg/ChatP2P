@@ -31,6 +31,7 @@ server.listen(process.env.PORT ||4000,()=>{
     console.log("Server is Running...")
 });
 
+// Los clientes se conectaran al servidor mediante un socket para recibir notificaciones de cuando un usuario se conecta o se desconecta
 socket_server.use((socket, next) => {
     try{
         let token = socket.handshake.auth.token;
@@ -52,13 +53,15 @@ socket_server.use((socket, next) => {
         next(error);
     }
 });
-
+ 
 socket_server.on('connection', (socket) => {
-    console.log("Nueva conexion detectada");
+    console.log(`Nueva conexion detectada al servidor de WS: ${socket.user}:${socket.port}` );
     socket.emit('users', database);
+
     socket.broadcast.emit('new_user', {user: socket.user, port: socket.port});
 
     socket.on('disconnect', () =>{
+        console.log(`Conexion terminada con: ${socket.user}:${socket.port}` );
         socket.broadcast.emit('remove_user', {user: socket.user, port: socket.port});
     });
 });
