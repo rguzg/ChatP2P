@@ -107,6 +107,7 @@ const botonEnviar = document.querySelector('#boton_enviar');
 let currentContact = null;
 let contactos = [];
 let username;
+let server_socket;
 
 // Muestra los mensajes almacenados del contacto en contenedorMensajes
 const ShowMessages = (mensajes) => {
@@ -215,6 +216,13 @@ window.onload = () => {
         let port = decoded['port']
 
         ipcRenderer.startWSServer(port);
+
+        server_socket = io(`ws://localhost:4000?token=${token}`, {
+            transports: ["websocket"],
+            auth: {
+                token
+            }
+        });
 
         document.querySelector('#username').innerText = username;
     } catch {
