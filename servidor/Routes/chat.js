@@ -1,4 +1,5 @@
 const express = require('express');
+const connUsers = require('../config/ConnectedUsers')
 const Chat = express.Router();
 let ip = ""
 let messages = {
@@ -11,7 +12,7 @@ Chat.get("/",(req,res,next)=>{
 
      ip = req.ip
     console.log(ip)
-    return  res.status(200).json({code:200,message:"Connected from "+ip})
+    return  res.status(200).json({code:200,message:"Connected from "+ip,Users:connUsers})
 
 
 })

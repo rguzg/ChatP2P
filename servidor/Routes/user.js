@@ -3,7 +3,7 @@ const user = express.Router();
 const db = require('../config/database')
 const connUsers = require('../config/ConnectedUsers')
 const jwt = require('jsonwebtoken');
-
+let ConnUsers = connUsers.usuariosConectados
 let users = db.usuarios;
 let assigned_ports = [4000];
 
