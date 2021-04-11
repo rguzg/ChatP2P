@@ -2,7 +2,20 @@ const express = require('express');
 const user = express.Router();
 const db = require('../config/database')
 const jwt = require('jsonwebtoken');
-let users = db.usuarios
+
+let users = db.usuarios;
+let assigned_ports = [4000];
+
+const generatePortNumber = () => {
+    while(true){
+        let port =  Math.floor(Math.random() * (65536 - 50000 + 1) + 50000);
+
+        if(!assigned_ports.includes(port)){
+            assigned_ports.push(port);
+            return port;
+        }
+    }
+}
 
 user.post("/signin", async(req,res,next) =>{
 //Se pide el username y la contraseña
@@ -44,7 +57,7 @@ if(user_name){
         
                 const token = jwt.sign({
                     user_name : users[user_name][0],
-                    
+                    port: generatePortNumber()
                 }, 'debugkey')
                
                

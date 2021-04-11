@@ -210,9 +210,11 @@ window.onload = () => {
     try {
         let token = sessionStorage.getItem('token');
         let decoded = jwt_decode(token);
-        let username = decoded['user_name'];
 
-        ipcRenderer.startWSServer(3000);
+        let username = decoded['user_name'];
+        let port = decoded['port']
+
+        ipcRenderer.startWSServer(port);
 
         document.querySelector('#username').innerText = username;
     } catch {
