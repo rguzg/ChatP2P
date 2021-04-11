@@ -56,7 +56,7 @@ socket_server.use((socket, next) => {
 socket_server.on('connection', (socket) => {
     console.log("Nueva conexion detectada");
     socket.emit('users', database);
-    //socket.broadcast.emit('new_user', )
+    socket.broadcast.emit('new_user', {user: socket.user, port: socket.port});
 });
 
 
