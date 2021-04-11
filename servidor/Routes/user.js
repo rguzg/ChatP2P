@@ -89,4 +89,4 @@ else{
 
 
 
-module.exports = user;
+module.exports = {user, database: users};
