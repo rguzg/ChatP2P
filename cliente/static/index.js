@@ -77,16 +77,23 @@ class Contacto{
             throw new Error("El WebSocket de este contacto no está definido");
         }
 
-        let message = {
+        let sent_message = {
             type: 'text',
             content: message_content,
             origin: 'sent',
             contact: this.name,
         };
 
-        this.ws.emit('message', message);
-        this.messages.push(message);
-        this.dispatchWSEvent(new CustomEvent('message', {detail: message}));
+        let received_message = {
+            type: 'text',
+            content: message_content,
+            origin: 'received',
+            contact: username,
+        };
+
+        this.ws.emit('message', received_message);
+        this.messages.push(sent_message);
+        this.dispatchWSEvent(new CustomEvent('message', {detail: sent_message}));
     }
 
     // Envia evento si listener no es nulo
@@ -226,10 +233,12 @@ contenedorMensajes.addEventListener('message', (event) => {
 
 window.onload = () => {
     try {
+        ipcRenderer.closeWSServer();
+
         let token = sessionStorage.getItem('token');
         let decoded = jwt_decode(token);
 
-        let username = decoded['user_name'];
+        username = decoded['user_name'];
         let port = decoded['port']
 
         ipcRenderer.startWSServer(port);
@@ -256,6 +265,11 @@ window.onload = () => {
 
         server_socket.on('new_user', (user) => {
             AddContact(user.user, user.port);
+        });
+
+        server_socket.on('disconnect', () => {
+            alert('Ocurrió un error al conectarse con el servidor. Es necesario que vuelvas a iniciar sesión');
+            window.location.href = 'login.html';
         });
 
         document.querySelector('#username').innerText = username;

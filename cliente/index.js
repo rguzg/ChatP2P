@@ -62,7 +62,9 @@ ipcMain.on('startWSServer', (event, port) => {
 });
 
 ipcMain.on('closeWSServer', () => {
-    socket_server.close();
+    if(socket_server){
+        socket_server.close();
+    }
 });
 
 
