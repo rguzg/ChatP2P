@@ -1,8 +1,9 @@
 const express = require('express');
 const user = express.Router();
 const db = require('../config/database')
+const connUsers = require('../config/ConnectedUsers')
 const jwt = require('jsonwebtoken');
-
+let ConnUsers = connUsers.usuariosConectados
 let users = db.usuarios;
 let assigned_ports = [4000];
 
@@ -49,17 +50,20 @@ const {user_name} = req.body
 
 if(user_name){
 
-    
+    //Existencia del usuario 
     if(users.hasOwnProperty(user_name)){
 
         if(users[user_name][0]==user_name){
 
-        
+                //Creación del JWT
                 const token = jwt.sign({
                     user_name : users[user_name][0],
                     port: generatePortNumber()
                 }, 'debugkey')
                
+
+                //Se agrega el usuario a la lista de usuarios Conectados.
+               ConnUsers[user_name] = [user_name,req.ip]
                
                 return res.status(200).json({code:200,message:token})
 
