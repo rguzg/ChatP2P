@@ -245,6 +245,11 @@ window.onload = () => {
             });
         })
 
+        server_socket.on('connect_error', () => {
+            alert('Ocurrió un error al conectarse con el servidor. Es necesario que vuelvas a iniciar sesión');
+            window.location.href = 'login.html';
+        })
+
         document.querySelector('#username').innerText = username;
     } catch {
         window.location.href = 'login.html';
