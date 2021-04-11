@@ -6,7 +6,7 @@ const http = require("http");
 
 const {app, BrowserWindow, ipcMain} = electron;
 let server;
-let socket_server;
+let socket_server = undefined;
 
 let index;
 
@@ -38,7 +38,8 @@ ipcMain.on('startWSServer', (event, port) => {
     
         server.on('close', () => {
             console.log("Servidor parado");
-        })
+            socket_server = undefined
+        });
     
         // Esta sección controla todo lo que tenga que ver con los WebSockets
         socket_server.on('connection', (socket) => {
