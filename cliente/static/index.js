@@ -275,7 +275,9 @@ window.onload = () => {
             let usuariosConectados = database['usuariosConectados']
 
             Object.keys(usuariosConectados).forEach((user) => {
-                AddContact(usuariosConectados[user][0], usuariosConectados[user][1]);
+                if(user != username){
+                    AddContact(usuariosConectados[user][0], usuariosConectados[user][1]);
+                }
             });
         });
 
