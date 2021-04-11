@@ -112,6 +112,7 @@ class Contacto{
 const contenedorMensajes = document.querySelector('#mensajes');
 const inputMensajesTexto = document.querySelector('#mensajes_texto');
 const botonEnviar = document.querySelector('#boton_enviar');
+const server_address = 'http://localhost:4000';
 
 let currentContact = null;
 let contactos = [];
@@ -219,7 +220,17 @@ botonEnviar.addEventListener('click', () => {
 
 document.querySelector('#logout').addEventListener('click', () => {
     ipcRenderer.closeWSServer();
+
+    fetch(`${server_address}/user/logout`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${sessionStorage.getItem('token')}` 
+        }
+    });
+
     sessionStorage.removeItem('token');
+
+
     window.location.href = 'login.html';
 });
 
