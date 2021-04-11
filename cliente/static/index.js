@@ -38,6 +38,7 @@ class Contacto{
         name.innerText = this.name;
 
         // Definición de button
+        button.id = this.name;
         button.appendChild(status_image);
         button.appendChild(profile_picture);
         button.appendChild(name);
@@ -54,6 +55,10 @@ class Contacto{
         socket.on('connect', () => {
             this.dispatchWSEvent(new Event('connect'));
         });
+
+        socket.on('disconnect', () => {
+            this.DOMElement.remove();
+        })
 
         this.ws = socket;
     }
@@ -196,6 +201,11 @@ const AddContact = (username, port) => {
     document.querySelector('.botones').appendChild(nuevoContacto.DOMElement);
 }
 
+const RemoveContact = (username) => {
+    document.querySelector(`#${username}`).remove();
+
+}
+
 // Enviar al cliente el mensaje que se encuentre en inputMensajesTexto
 botonEnviar.addEventListener('click', () => {
     let texto_mensaje = inputMensajesTexto.value;
@@ -265,6 +275,10 @@ window.onload = () => {
 
         server_socket.on('new_user', (user) => {
             AddContact(user.user, user.port);
+        });
+
+        server_socket.on('remove_user', (user) => {
+            RemoveContact(user.user);
         });
 
         server_socket.on('disconnect', () => {

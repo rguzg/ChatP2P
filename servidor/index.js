@@ -57,7 +57,12 @@ socket_server.on('connection', (socket) => {
     console.log("Nueva conexion detectada");
     socket.emit('users', database);
     socket.broadcast.emit('new_user', {user: socket.user, port: socket.port});
+
+    socket.on('disconnect', () =>{
+        socket.broadcast.emit('remove_user', {user: socket.user, port: socket.port});
+    });
 });
+
 
 
 
