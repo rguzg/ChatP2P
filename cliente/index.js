@@ -4,20 +4,20 @@ const path = require('path');
 const io = require("socket.io");
 const http = require("http");
 
-const {app, BrowserWindow, contextBridge} = electron;
-const server = http.createServer();
-const socket_server = io(server, {
-    // Este puerto será definido para cada cliente durante el proceso de inicio de sesión. Por el momento se dejará como 3000
-    port: 3000,
-    serveClient: false
-});
+const {app, BrowserWindow, ipcMain} = electron;
+let server;
+let socket_server;
 
 let index;
 
 // Listen for app to be ready
 app.on('ready', function() {
     // Create new window
-    index = new BrowserWindow({});
+    index = new BrowserWindow({
+        webPreferences: {
+            preload: app.getAppPath() + '/preload.js'
+        }
+    });
     // Load HTML into window
     index.loadURL(url.format({
         pathname: path.join(__dirname, 'login.html'),
@@ -26,17 +26,42 @@ app.on('ready', function() {
     }));
 });
 
-// Esta sección controla todo lo que tenga que ver con los WebSockets
-socket_server.on('connection', (socket) => {
-    console.log("Nueva conexión detectada");
-    socket.on('message', (message) => {
-        console.log("Se ha recibido un mensaje, enviandolo al proceso Render...");
+ipcMain.on('startWSServer', (event, port) => {
+    server = http.createServer();
+    
+    socket_server = io(server, {
+        // Este puerto será definido para cada cliente durante el proceso de inicio de sesión. Por el momento se dejará como 3000
+        port: port,
+        serveClient: false
+    });
+
+    server.on('close', () => {
+        console.log("Servidor parado");
+    })
+
+    // Esta sección controla todo lo que tenga que ver con los WebSockets
+    socket_server.on('connection', (socket) => {
+        console.log("Nueva conexion detectada");
+    
+        // Cuando se recibe un mensaje, enviarlo al proceso Render
+        socket.on('message', (message) => {
+            console.log("Se ha recibido un mensaje, enviandolo al proceso Render...");
+    
+            message.origin = 'received';
+    
+            index.webContents.send('message', message);
+        });
+    });
+    
+    server.listen(port, () => {
+        console.log('Servidor iniciado');
     });
 });
 
-server.listen(process.env.PORT || 3000, () => {
-    console.log('The server is running!');
+ipcMain.on('closeWSServer', () => {
+    socket_server.close();
 });
+
 
 
 
