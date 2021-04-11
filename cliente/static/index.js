@@ -169,6 +169,26 @@ const CreateMessage = (mensaje) => {
     return contenedor_mensaje;
 }
 
+const AddContact = (username, port) => {
+    let nuevoContacto = new Contacto(username, port);
+    contactos.push(nuevoContacto);   
+
+    // Mostrar la ventana de chat, y si no existe, crear el WS que le corresponde al contacto
+    nuevoContacto.DOMElement.addEventListener('click', () => {
+        if(nuevoContacto.ws == null){
+            nuevoContacto.SetWebSocket();
+        }
+
+        currentContact = nuevoContacto;
+        ShowMessages(currentContact.messages);
+        ChangeMessageBoxHeader(currentContact.name);
+    });
+
+    nuevoContacto.listener = contenedorMensajes;
+
+    document.querySelector('.botones').appendChild(nuevoContacto.DOMElement);
+}
+
 // Enviar al cliente el mensaje que se encuentre en inputMensajesTexto
 botonEnviar.addEventListener('click', () => {
     let texto_mensaje = inputMensajesTexto.value;
@@ -225,30 +245,18 @@ window.onload = () => {
             let usuariosConectados = database['usuariosConectados']
 
             Object.keys(usuariosConectados).forEach((user) => {
-                let nuevoContacto = new Contacto(usuariosConectados[user][0], usuariosConectados[user][1]);
-                contactos.push(nuevoContacto);   
-
-                // Mostrar la ventana de chat, y si no existe, crear el WS que le corresponde al contacto
-                nuevoContacto.DOMElement.addEventListener('click', () => {
-                    if(nuevoContacto.ws == null){
-                        nuevoContacto.SetWebSocket();
-                    }
-
-                    currentContact = nuevoContacto;
-                    ShowMessages(currentContact.messages);
-                    ChangeMessageBoxHeader(currentContact.name);
-                });
-
-                nuevoContacto.listener = contenedorMensajes;
-
-                document.querySelector('.botones').appendChild(nuevoContacto.DOMElement);
+                AddContact(usuariosConectados[user][0], usuariosConectados[user][1]);
             });
-        })
+        });
 
         server_socket.on('connect_error', () => {
             alert('Ocurrió un error al conectarse con el servidor. Es necesario que vuelvas a iniciar sesión');
             window.location.href = 'login.html';
-        })
+        });
+
+        server_socket.on('new_user', (user) => {
+            AddContact(user.user, user.port);
+        });
 
         document.querySelector('#username').innerText = username;
     } catch {
