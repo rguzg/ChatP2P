@@ -46,6 +46,7 @@ class Contacto{
     SetWebSocket(){
         let socket = io(`ws://localhost:${this.port}`, {
             transports: ["websocket"],
+            reconnection: false
         });
 
         socket.on('connect', () => {
@@ -54,7 +55,12 @@ class Contacto{
 
         socket.on('disconnect', () => {
             this.dispatchWSEvent(new CustomEvent('disconnect', {detail: this}));
-        })
+        });
+
+        socket.on('connect_error', () => {
+            alert('No se ha podido conectar con el otro usuario');
+            this.dispatchWSEvent(new CustomEvent('disconnect', {detail: this}));
+        });
 
         this.ws = socket;
     }
@@ -263,6 +269,8 @@ contenedorMensajes.addEventListener('message', (event) => {
 contenedorMensajes.addEventListener('disconnect', (event) => {
     let contacto = event.detail;
 
+    RemoveContact(contacto.name);
+
     delete contactos[contacto.name];
     delete contacto;
 })
@@ -276,7 +284,6 @@ window.onload = () => {
         let port = decoded['port']
 
         ipcRenderer.startWSServer(port);
-        ipcRenderer.removeAllListeners();
 
         server_socket = io(`ws://localhost:4000?token=${token}`, {
             transports: ["websocket"],
