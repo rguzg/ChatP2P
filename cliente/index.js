@@ -24,6 +24,7 @@ app.on('ready', function() {
         protocol: 'file:',
         slashes: true
     }));
+    index.on('')
 });
 
 // El Servidor de WS del cliente es el lugar a donde otros clientes se conectarán. La tarea de este servidor es recibir los mensajes
