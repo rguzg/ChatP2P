@@ -177,6 +177,10 @@ html, body {
     top: 6px;
 }
 
+.messages {
+    overflow-y: auto;
+}
+
 .type {
     padding: 2%;
     margin: 0px !important;
