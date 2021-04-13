@@ -3,15 +3,22 @@ const url = require('url');
 const path = require('path');
 const io = require("socket.io");
 const http = require("http");
+const fs_promises = require("fs/promises");
 
-const {app, BrowserWindow, ipcMain} = electron;
+const {app, BrowserWindow, ipcMain, dialog} = electron;
 let server;
 let socket_server = undefined;
 
 let index;
 
+const GetFilename = (path) => {
+    let split_path = path.split('\\');
+
+    return split_path[split_path.length - 1];
+}
+
 // Listen for app to be ready
-app.on('ready', function() {
+app.on('ready', async function() {
     // Create new window
     index = new BrowserWindow({
         webPreferences: {
@@ -35,7 +42,9 @@ ipcMain.on('startWSServer', (event, port) => {
         
         socket_server = io(server, {
             port: port,
-            serveClient: false
+            serveClient: false,
+            // Mensajes de máximo 5MB. Si un mensaje es máximo a esto, se cierra el socket
+            maxHttpBufferSize: 5e6
         });
     
         server.on('close', () => {
@@ -67,6 +76,48 @@ ipcMain.on('closeWSServer', () => {
         socket_server.close();
     }
 });
+
+ipcMain.handle('OpenFileDialog', async () =>{
+
+    let file_path = await dialog.showOpenDialog(index, {
+        title: "Selecciona el archivo a subir",
+        properties: ['openFile']
+    });
+
+    if(!file_path.canceled){
+        let file = await fs_promises.readFile(file_path.filePaths[0]);
+    
+        // La propiedad filePaths es un arreglo que contiene el path del archivo. Las otras cosas
+        // del objeto se ignoran
+        let filename = GetFilename(file_path.filePaths[0]);
+    
+        return {
+            file,
+            filename
+        };
+    }
+
+    return null;    
+});
+
+ipcMain.handle('OpenSaveDialog', async (event, file) => {
+    let saveDialogResult = await dialog.showSaveDialog(index, {
+        title: "Guardar archivo",
+        defaultPath: file.filename
+    });
+
+    if(!saveDialogResult.canceled){
+        try {
+            await fs_promises.writeFile(saveDialogResult.filePath, file.file);
+            return true;
+        } catch {
+            return false;
+        }
+    } 
+
+    return false;
+});
+
 
 
 

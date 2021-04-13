@@ -79,26 +79,28 @@ class Contacto{
     // Envia al contacto al que se esté conectado un mensaje. 
     // El mensaje también se almacena en this.messages y además se 
     // envía un evento 'message' con los contenidos del mensaje
-    SendMessage(message_content){
+    SendMessage(message_content, message_type){
         if(this.ws == null){
             throw new Error("El WebSocket de este contacto no está definido");
         }
 
         let sent_message = {
-            type: 'text',
+            type: message_type,
             content: message_content,
             origin: 'sent',
             contact: this.name,
         };
 
         let received_message = {
-            type: 'text',
+            type: message_type,
             content: message_content,
             origin: 'received',
             contact: username,
         };
 
-        VerifyMessage(message_content);
+        if(message_type === 'text'){
+            VerifyMessage(message_content);
+        }
 
         this.ws.emit('message', received_message);
         this.messages.push(sent_message);
@@ -150,6 +152,7 @@ const CreateMessage = (mensaje) => {
     let contenedor_mensaje = document.createElement('div');
     let contenido_mensaje = document.createElement('div');
 
+    // TODO: Refactor this because it's poopy doodoo right now
     switch(mensaje.origin){
         case 'received':
             let profile_picture = document.createElement('img');
@@ -163,7 +166,25 @@ const CreateMessage = (mensaje) => {
 
             // Definición de mensaje
             contenido_mensaje.classList.add('box', 'sb2');
-            contenido_mensaje.innerText = mensaje.content;
+
+            if(mensaje.type === 'text'){
+                contenido_mensaje.innerText = mensaje.content;
+            }
+
+            if(mensaje.type === 'binary'){
+                contenido_mensaje.innerText = `Haz click para descargar: ${mensaje.content.filename}`;
+                contenido_mensaje.style.cursor = 'pointer';
+
+                contenedor_mensaje.addEventListener('click', async () => {
+                    let didSave = await ipcRenderer.OpenSaveDialog(mensaje.content);
+                    
+                    if(didSave){
+                        alert("Archivo guardado");
+                    } else {
+                        alert("Ocurrió un error al guardar el archivo. Intentalo de nuevo");
+                    }
+                });
+            }
 
             // Definición de contenedor_mensaje
             contenedor_mensaje.classList.add('receive', 'd-flex', 'col-sm-12', 'align-items-center', 'justify-content-start');
@@ -172,7 +193,14 @@ const CreateMessage = (mensaje) => {
         case 'sent':
             // Definición de mensaje
             contenido_mensaje.classList.add('box', 'sb1');
-            contenido_mensaje.innerText = mensaje.content;
+
+            if(mensaje.type === 'text'){
+                contenido_mensaje.innerText = mensaje.content;
+            }
+
+            if(mensaje.type === 'binary'){
+                contenido_mensaje.innerText = `Enviaste: ${mensaje.content.filename}`;
+            }
 
             // Definición de contenedor_mensaje
             contenedor_mensaje.classList.add('sending', 'd-flex', 'col-sm-12', 'align-items-center', 'justify-content-end');
@@ -226,7 +254,7 @@ botonEnviar.addEventListener('click', () => {
     let texto_mensaje = inputMensajesTexto.value;
 
     if(texto_mensaje.trim() != "" && currentContact){
-        currentContact.SendMessage(texto_mensaje);
+        currentContact.SendMessage(texto_mensaje, 'text');
     }
 
     inputMensajesTexto.value = "";
@@ -256,6 +284,17 @@ document.querySelector('#mensajes_texto').addEventListener('keydown', (event) =>
     }
 });
 
+document.querySelector('#subir_archivo').addEventListener('click', async () => {
+    if(currentContact){
+        let file = await ipcRenderer.OpenFileDialog();
+
+        if(file){
+            currentContact.SendMessage(file, 'binary');
+        }
+    }
+    
+});
+
 // Mostrar mensajes que haya enviado/recibido el usuario. Los mensajes solo se muestran si currentContact es
 // el mismo contacto al que le mandó/del que recibió el mensaje
 contenedorMensajes.addEventListener('message', (event) => {
@@ -273,7 +312,7 @@ contenedorMensajes.addEventListener('disconnect', (event) => {
 
     delete contactos[contacto.name];
     delete contacto;
-})
+});
 
 window.onload = () => {
     try {

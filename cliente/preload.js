@@ -21,5 +21,15 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
     },
     removeAllListeners: () => {
         ipcRenderer.removeAllListeners('message');
+    },
+    OpenFileDialog: () => {
+        let file_path = ipcRenderer.invoke('OpenFileDialog');
+
+        return file_path;
+    },
+    OpenSaveDialog: (file) => {
+        let didSave = ipcRenderer.invoke('OpenSaveDialog', file);
+
+        return didSave;
     }
 })
